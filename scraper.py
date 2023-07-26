@@ -68,7 +68,8 @@ def scrape(language, filename):
             description_cn = translate_text(description)  # 翻译项目描述
             url = i(".lh-condensed a").attr("href")
             url = "https://github.com" + url
-            f.write(u"* [{title}]({url}):{description_cn}\n".format(title=title, url=url, description=description_cn))
+            f.write(u"* [{title}]({url}):{description}//{description_cn}\n".format(title=title, url=url, description=description,description_cn=description_cn))
+
 
 
 def job():
