@@ -9,17 +9,21 @@ from pyquery import PyQuery as pq
 import openai
 import os
 # 从环境变量获取你的OpenAI的API密钥
+
 openai.api_key = os.getenv("OPENAI_KEY")
 
 def translate_text(english_text):
     # 调用OpenAI API进行翻译
-    response = openai.Completion.create(
-        engine="text-davinci-004",
-        prompt=f'{english_text}\n\nTranslated:',
-        temperature=0.5,
-        max_tokens=60
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+        {"role": "system", "content": "You are a translator"},
+        {"role": "user", "content": f"translate to chinese:{english_text}"},
+        ]
     )
-    translation = response['choices'][0]['text'].strip()  # 从response中提取翻译结果
+    print("response",response)
+    translation = response['choices'][0]['message'].content  # 从response中提取翻译结果
+    print("translation",translation)
     return translation
 
 def git_add_commit_push(date, filename):
@@ -36,7 +40,7 @@ def git_add_commit_push(date, filename):
 def createMarkdown(date, filename):
     # 这个函数用于创建一个 markdown 文件，并写入日期
     with open(filename, 'w') as f:
-        f.write("## " + date + "\n")  # 写入日期
+        f.write("## " + date + "-cn\n")  # 写入日期
 
 
 def scrape(language, filename):
@@ -80,11 +84,11 @@ def job():
     createMarkdown(strdate, filename)  # 创建 markdown 文件
 
     # 抓取不同语言的 GitHub Trending 信息
-    # scrape('python', filename)
+    scrape('python', filename)
     scrape('typescript', filename)
 
     # scrape('swift', filename)
-    # scrape('javascript', filename)
+    scrape('javascript', filename)
     # scrape('go', filename)
 
     # git add commit push
